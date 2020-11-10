@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<!--<html manifest="demo.appcache"> -->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0" />
+<title>店小二v1.0.1</title>
+<style>
+button,select,input{
+   width:100%;
+   font-size:1em;
+}
+select{
+  
+}
+input{
+  text-align:right;
+}
+nav{
+position:fixed;
+left:0;
+top:0;
+right:0
+}
+
+nav ul
+{
+display:inline-block;
+list-style-type:none;
+margin:0;
+padding:0;
+padding-top:6px;
+padding-bottom:6px;
+}
+nav li
+{
+display:inline;
+}
+nav a:link,nav a:visited
+{
+border:1px solid gray;
+padding-left:20px;
+padding-right:20px;
+border-radius:5px;
+box-shadow:inset 0px 0px 0px 1px rgba(255,115,100,0.4),0 1px 3px #333333;
+text-shadow:0px -1px 1px rgba(0,0,0,0.8);
+font-weight:bold;
+color:#FFFFFF;
+background-color:#98bf21;
+text-align:center;
+padding:6px;
+text-decoration:none;
+text-transform:uppercase;
+}
+nav a:hover,nav a:active
+{
+background-color:#7A991A;
+}
+a:link,a:visited,a:hover,a:active{
+  color:blue;
+}
+.view{
+ display:none;
+ margin-top:40px;
+}
+
+#mylist{
+  list-style:none;
+  padding:0px;
+  margin:5px;
+
+}
+#mylist li{
+  border-bottom:1px solid gray;
+}
+#mylist li:nth-child(even){
+  background-color:lightgray;
+}
+header{
+  background-color:gray;
+  color:white;
+}
+span.item,.itemid,.reditem{
+  display:inline-block;
+  width:15%; 
+  text-align:right;
+}
+
+.itname{
+  display:inline-block;
+  width:25%;
+  
+}
+.half{
+  display:inline-block;
+  width:43%;
+  
+}
+.reditem{
+  color:red;
+}
+
+table{
+  width:100%;
+  
+}
+table td:nth-child(even){
+  
+  width:35%;
+}
+table td:nth-child(odd){
+ 
+  width:15%;
+}
+
+</style>
+<script>
+
+var mydb = openDatabase('store',1,'this a Web Sql Database',1024*1024,);
+var curdate;
+var mxsql='SELECT * FROM store,item where item.itemid=store.itemid ';
+
+var itemsql="select itemid,itemname as one,itemid as two,price as three,cost as four from item";
+
+var sbsql="select '宋斌合计'as one,sum(number) as two,sum(amount) as three,sum(amount-scost) as four from store,item where store.itemid=item.itemid and itemname like '%宋斌%' ";
+mydb.transaction(function (tx) {
+    tx.executeSql('create table if not exists store (sid integer primary key AUTOINCREMENT, date date,itemid integer,sprice integer,number integer,amount integer,scost integer ,remark text)');
+    tx.executeSql('create table if not exists item (itemid integer primary key AUTOINCREMENT,itemname text,price integer default 0,cost integer default 0)');
+
+});
+
+function setvalue(id){
+ if(document.getElementById("find").style.display=="block") return; document.getElementById("itemid").value=id;
+mydb.transaction(function (tx) {
+tx.executeSql('SELECT * FROM item where itemid='+id, [], function (tx, results) {
+  var ci=results.rows.item(0);
+  document.getElementById("prodname").value=ci.itemname;
+
+document.getElementById("price").value=ci.price;
+document.getElementById("cost").value=ci.cost;
+}, null);
+});
+ 
+}
+
+function prodsave(){
+	var pn=document.getElementById("prodname").value;
+	if(pn==""){
+	   alert("商品名称不能为空！");
+	   return;
+	}
+		var id=document.getElementById("itemid").value;
+
+	var pri=document.getElementById("price").value;
+	var co=document.getElementById("cost").value;
+	var sql;
+	if(id=="") sql='insert into item (itemname,price,cost) values (?,?,?)';
+	else sql="update item set itemname=?,price=?,cost=? where itemid=?";
+	mydb.transaction(function (tx) {
+    if(id=="") tx.executeSql(sql,[pn,pri,co]);
+    else tx.executeSql(sql,[pn,pri,co,id]);
+    
+    
+  prodlist(itemsql);
+});
+
+}
+
+
+function clearlist(){
+  var produl=document.getElementById("mylist");
+  var childs = produl.childNodes;
+
+  for(var i=childs.length-1; i >= 0; i--) produl.removeChild(childs[i]);
+document.getElementById("listhead").innerHTML="";
+}
+
+function prodlist(sql){
+  
+      clearlist();
+
+    var curitem;
+    
+  mydb.transaction(function (tx) { tx.executeSql(sql, [], function (tx, results) { 
+  var len = results.rows.length;
+  
+ if(len>0){
+         var lh=document.getElementById("listhead");
+  var prod=document.getElementById("prod").style.display;
+  var lhs=new Array();
+  if(prod=="block"){
+    lhs[0]="编号";
+    lhs[1]="售价";
+    lhs[2]="成本";
+    lhs[3]="商品名称";
+  }
+  else 
+  {
+    lhs[0]="数量";
+    lhs[1]="金额";
+    lhs[2]="毛利";
+    lhs[3]="&nbsp";
+  }
+
+  lh.innerHTML+="<span class='half'>"+lhs[3]+"</span>";
+  for(var i=0;i<3;i++)
+  lh.innerHTML+="<span class='item'>"+lhs[i]+"</span>";
+ }
+   for (var i =len-1; i>=0; i--){ 
+    var pli=document.createElement("li");
+ curitem=results.rows.item(i); 
+ pli.innerHTML="<span class='half'><a href='#' onclick='setvalue("+curitem.itemid+")'>"+curitem.one+"</a>";
+
+pli.innerHTML+="</span><span class='item'>"+curitem.two;
+
+pli.innerHTML+="</span><span class='item'>"+curitem.three;
+pli.innerHTML+="</span><span class='reditem'>"+curitem.four+"</span>";
+
+  document.getElementById("mylist").appendChild(pli);   } }, null); });
+
+}
+
+function salelist(sql){
+  
+    clearlist();
+    var curitem;
+  mydb.transaction(function (tx) { tx.executeSql(sql, [], function (tx, results) { 
+  var len = results.rows.length, i; for (i =len-1; i>=0; i--){ 
+    var pli=document.createElement("li");
+ curitem=results.rows.item(i); 
+ pli.innerHTML+="<span class='half'>"+curitem.date+"</span><br>";
+
+pli.innerHTML+="<span class='half'><a href='#' onclick='delsale("+curitem.sid+")'>"+curitem.itemname+"</a></span>";
+
+pli.innerHTML+="<span class='item'>"+curitem.number+"</span>*";
+pli.innerHTML+="<span class='item'>"+curitem.sprice+"</span>=";
+pli.innerHTML+="<span class='item'>"+curitem.amount+"</span><br>";
+pli.innerHTML+="<span class='half'>"+curitem.remark+"</span>";
+pli.innerHTML+="成本:<span class='item'>"+curitem.scost+"</span>";
+pli.innerHTML+="<span class='item'>毛利:</span><span class='reditem'>"+(curitem.amount-curitem.scost)+"</span>";
+ document.getElementById("mylist").appendChild(pli);   } }, null); });
+
+}
+
+function salesave(){
+
+		var id=document.getElementById("sname").value;
+		if(id===""){
+		  alert("请选择销售商品！");
+		  return;
+		}
+	
+	var sn=document.getElementById("snum").value;
+	var sp=document.getElementById("sprice").value;
+	var sc=document.getElementById("scost").value;
+	am=document.getElementById("amount").value;
+	re=document.getElementById("remark").value;
+	var sql='insert into store (date,itemid,number,sprice,amount,scost,remark) values (?,?,?,?,?,?,?)';
+
+	mydb.transaction(function (tx) {
+    tx.executeSql(sql,[curdate,id,sn,sp,am,sc,re]);  
+});
+salelist(mxsql);
+}
+
+function delsale(id){
+if(confirm("确认删除吗？")==true){
+var sql="delete from store where sid=?"
+	mydb.transaction(function (tx) {
+    tx.executeSql(sql,[id]);  
+});
+salelist(mxsql);
+}
+}
+
+
+function closeallview(){
+
+var x = document.getElementsByClassName("view");
+var i;
+for (i=0;i<x.length;i++) {
+    x[i].style.display = "none";
+}
+}
+
+function show(arc){
+
+closeallview();
+clearlist();
+document.getElementById(arc).style.display="block";
+
+if(arc=="add") addinit();
+if(arc=="prod") prodlist(itemsql);
+if(arc=="find") find();
+}
+
+function addinit(){
+  var sel=document.getElementById("sname");
+  
+  mydb.transaction(function (tx) {
+tx.executeSql('SELECT * FROM item', [], function (tx, results) {
+
+  var len = results.rows.length, i,ci; for (i =0; i<len; i++){ 
+  ci=results.rows.item(i);
+  sel.options[i] = new Option(ci.itemname, ci.itemid);
+}
+
+sel.onchange=function(){
+var id=this.value;
+
+  mydb.transaction(function (tx) {
+tx.executeSql('SELECT * FROM item where itemid='+id, [], function (tx, results) {
+  var ci=results.rows.item(0);
+  document.getElementById("snum").value="1";
+
+document.getElementById("sprice").value=ci.price;
+document.getElementById("scost").value=ci.cost;
+document.getElementById("amount").value=ci.price;
+}, null);
+});
+
+};
+
+salelist(mxsql);
+}, null);
+});
+}
+
+
+
+function find(){
+ var k=document.getElementById("findkey").value;
+ if(k!=""){
+   salelist(mxsql+" and remark like '%"+k+"%'");
+   return;
+ }
+  var y=document.getElementById("year").value;
+  var m=document.getElementById("month").value;
+    var s=document.getElementById("findstyle").value,t;
+    if(m==0) t=" substr(date,1,4)='"+y+"' ";
+    else t=" substr(date,1,7)='"+y+"-"+m+"'";
+    var strsql=new Array();
+    strsql[0]="select substr(date,1,7) as one,sum(number) as two,sum(amount) as three,sum(amount-scost) as four from store where findtime group by substr(date,1,7)";
+
+strsql[1]="select date as one,sum(number) as two,sum(amount) as three,sum(amount-scost) as four from store where findtime group by date order by date ";
+
+strsql[2]="select itemname as one,sum(number) as two,sum(amount) as three ,sum(amount-scost) as four from store,item where store.itemid=item.itemid and findtime group by store.itemid order by four ";
+
+strsql[3]=sbsql+" and findtime";
+
+strsql[4]=mxsql+" and findtime";
+  
+  var sql=strsql[s].replace("findtime",t);
+  
+  if(s==4) salelist(sql);
+  else prodlist(sql);
+
+}
+
+function load(){
+  show("add");
+
+  var d=new Date();
+  var month=("0"+(d.getMonth()+1)).slice(-2);
+  var year=d.getFullYear();
+    var day=("0"+d.getDate()).slice(-2);
+
+curdate=year+"-"+month+"-"+day; document.getElementById("today").innerHTML=curdate;
+  document.getElementById("year").value=year;
+  document.getElementById("month").value=month;
+}
+
+</script>
+</head>
+
+<body onload="load()">
+<nav>
+<ul>
+
+<li><a href="javascript:;" onclick="show('add')">日常销售</a></li>
+<li><a href="#" onclick="show('prod')">商品管理</a></li>
+<li><a href="#" onclick="show('find')">查询统计</a></li>
+<li><a href="#" onclick="show('system')">数据维护</a></li>
+</ul>
+
+</nav>
+
+<div id="add" class="view">
+<form> 
+<fieldset> 
+<legend>添加销售</legend>
+<table>
+
+<tr><td>日期</td><td><span id="today"></span></td><td>备注</td><td> <input id="remark" type="text" onclick="this.select()"/></td></tr>
+
+<tr><td>名称</td><td colspan=3><select id="sname"></select></td></tr>
+
+
+<tr><td>数量</td><td><input id="snum" type="number"/></td><td>单价</td><td> <input id="sprice"  type="number" /></td></tr>
+<tr><td>金额</td><td><input id="amount" type="number"/></td><td>成本</td><td> <input id="scost"  type="number"/></td></tr>
+<tr><td colspan=2><button type="button" onclick="salesave()">保存</button></td><td colspan=2><button type="reset">清空</button></td></tr>
+</table>
+
+</fieldset> 
+</form>
+
+</div>
+
+<div id="system" class="view">
+<h2>数据维护</h2>
+</div>
+
+<div id="prod" class="view">
+<form> 
+<fieldset>
+<legend>编辑商品</legend>
+<table>
+
+<tr><td>编号</td><td><input id="itemid" type="text" readonly/></td><td>名称</td><td> <input id="prodname" type="text" required/></td></tr>
+<tr><td>售价</td><td><input id="price"  type="number" /></td><td>成本</td><td> <input id="cost" type="number"/></td></tr>
+<tr><td colspan=2><button type="button" onclick="prodsave()">保存</button></td><td colspan=2><button type="reset">清空</button></td></tr>
+</table>
+</fieldset>
+</form>
+
+</div>
+
+<div id="find" class="view">
+<form> 
+<fieldset>
+<legend>查询统计</legend>
+<table>
+
+<tr><td>年份</td><td>
+<select id="year"> 
+<option value ="2019">2019</option> <option value ="2020">2020</option> <option value="2021">2021</option>
+
+</select> 
+</td><td>月份</td><td >
+<select id="month"> 
+<option value =0>全年</option> 
+<option value ="01">01</option> 
+<option value ="02">02</option> 
+<option value ="03">03</option> 
+<option value ="04">04</option> 
+<option value ="05">05</option> 
+<option value ="06">06</option> 
+<option value ="07">07</option> 
+<option value ="08">08</option> 
+<option value ="09">09</option> 
+<option value ="10">10</option> 
+<option value ="11">11</option> 
+<option value ="12">12</option> 
+</select> 
+</td></tr>
+<tr><td>类型</td><td colspan=3>
+
+<select id="findstyle"> 
+<option value =0>月汇总表</option> <option value =1>日汇总表</option> <option value=2>商品汇总表</option>
+<option value=3>自产汇总表</option>
+ <option value=4>明细表</option>
+</select> 
+
+</td></tr>
+<tr><td>备注</td><td colspan=3><input id="findkey" type="text"/></td></tr>
+<tr><td colspan=4><button type="button" onclick="find()">查询</button></td></tr>
+</table>
+</fieldset>
+</form>
+
+</div>
+<header id="listhead">
+
+</header>
+<ul id="mylist">
+
+</ul>
+</body>
+</html>
