@@ -1,0 +1,1 @@
+select _id,date,sum(amount) as amount,sum(cost) as cost,sum(amount-cost) as profit from store group by date

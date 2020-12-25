@@ -1,0 +1,1 @@
+SELECT _id,date,itemname,number,store.cost as cost,store.price as price,amount,(amount-store.cost) as profit,remark from store,item where store.itemid=item.itemid and date>=datetime('now','start of month','+0 month','-0 day') AND date < datetime('now','start of month','+1 month','0 day')  order by _id desc
