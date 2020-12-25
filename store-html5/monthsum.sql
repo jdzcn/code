@@ -1,0 +1,1 @@
+select _id, substr(date,1,7) as date,sum(amount) as amount,sum(cost) as cost,sum(amount-cost) as profit from store group by substr(date,1,7)

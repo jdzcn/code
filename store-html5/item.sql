@@ -1,0 +1,1 @@
+select _id,item.itemname as itemname,number,amount,remark from store,item where store.itemid=item.itemid

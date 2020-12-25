@@ -1,0 +1,1 @@
+select itemname,sum(number) as number,sum(amount) as amount,sum(store.cost) as cost,sum(amount-store.cost) as profit from store,item where store.itemid=item.itemid group by store.itemid order by amount desc

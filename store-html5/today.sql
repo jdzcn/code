@@ -1,0 +1,1 @@
+select _id,date,item.itemname as itemname,number,amount,(amount-store.cost) as profit from store,item where date=date('now','localtime') and store.itemid=item.itemid order by _id desc

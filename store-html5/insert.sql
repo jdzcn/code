@@ -1,0 +1,1 @@
+insert into store (date,itemid,price,number,amount,cost,remark) values ("2018-10-20",1,400,2,800,400,"")
