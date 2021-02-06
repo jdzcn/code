@@ -10,7 +10,7 @@
    if(!$db){
       echo $db->lastErrorMsg();
    } else {
-      echo "Opened database successfully\n";
+      echo "<p>Opened database successfully</p>";
    }
 
    $sql =<<<EOF
@@ -19,11 +19,11 @@ EOF;
 
    $ret = $db->query($sql);
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      echo "ID = ". $row['itemid'] . "\n";
-      echo "NAME = ". $row['itemname'] ."\n";
+      echo "<p>ID = ". $row['itemid'].'</p>';
+      echo "<p>NAME = ". $row['itemname'] ."</p>";
       // echo "COST = ". $row['cost] ."\n";
       // echo "PRICE =  ".$row['price'] ."\n\n";
    }
-   echo "Operation done successfully\n";
+   #echo "Operation done successfully\n";
    $db->close();
 ?>
