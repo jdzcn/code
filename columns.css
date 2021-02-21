@@ -1,0 +1,26 @@
+/* 创建两列 */
+/* Left column */
+section {   
+  float: left;
+  height: 500px;
+  width: 75%;
+  background-color: #f1f1f1;
+  border: 1px;
+  padding: 5px;
+}
+ 
+/* 右侧栏 */
+aside {
+  float: left;
+  width: 25%;
+  padding: 5px;
+  padding-left: 20px;
+}
+
+/* 响应式布局 - 屏幕尺寸小于 800px 时，两列布局改为上下布局 */
+@media screen and (max-width: 800px) {
+  section, aside {   
+    width: 100%;
+    padding: 0;
+  }
+}

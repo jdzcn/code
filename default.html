@@ -1,12 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Html5 media sample</title>
-<style>
-</style>
-</head>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+		<title>宋斌的网络日志</title>
+		 <!-- 顶部下拉菜单css代码 -->
+		<link rel="stylesheet" href="dropdown.css"> 
+
+		 <!-- 导航栏css代码 -->
+		<!-- <link rel="stylesheet" href="topnav.css">  -->
+
+		 <!-- 分栏css代码 -->
+		<link rel="stylesheet" href="columns.css"> 
+		
+		<style>
+			* 	{box-sizing: border-box;}
+			html{background-color:gray;}
+			body{
+				background-color:white;
+				min-height:980px;
+				min-width: 200px;
+				max-width: 980px;
+				margin: 0 auto;
+				padding: 10px;
+			}
+			article:after {
+				  content: "";
+				  display: table;
+				  clear: both;
+			}
+			footer {
+				text-align: center;
+			}
+		</style>
+	</head>
 <body>
+<header>
+	<h3>
+		宋斌的网络日志
+		<!-- 顶部下拉菜单html代码 -->
+
+			<div class="dropdown">
+			<span>≡</span>  
+			<div class="dropdown-content">
+				<a href="#">商品管理</a>
+				<a href="#">查询统计</a>
+				<a href="#">数据维护</a>
+			</div>
+			</div> 
+
+	</h3>
+
+	<!-- 导航栏代码 -->
+
+<!-- 	<nav>
+	  <a href="#">Linux</a>
+	  <a href="#">Html</a>
+	  <a href="#">PHP</a>
+	  <a href="#">CSS</a>
+	</nav>
+ -->
+ <hr>
+</header>
+
+<article>
+	<!-- 分栏代码 -->
+
+	<aside>
+	<h4>分类</h4>	
+	<ul>
+		<li>HTML5</li>
+		<li>CSS3</li>
+		<li>JAVASCRIPT</li>
+		<li>PHP</li>
+	</ul>
+	</aside>
+
+	<section>
+	<h4>标题</h4>
+	<p>文章内容</p>	
+	</section>
+	
+</article>
+
+<footer>
+	<hr>
+	<p>power by <a href="mailto:jdzcn@qq.com">jdzcn@qq.com</a></p>
+</footer>
 
 </body>
 </html>
