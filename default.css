@@ -1,0 +1,29 @@
+html {
+    font-size: 1.2em;
+    background-color:gray;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+    background-color:white;
+    /*max-width: 980px;*/
+    margin: 0 auto;
+    padding: 30px;
+}
+
+@media only screen and (min-width: 1400px) {
+    body {
+        max-width: 1024px;
+    }
+}
+
+@media only screen and (min-width: 1800px) {
+    body {
+        max-width: 1200px;
+    }
+}
+
+
+

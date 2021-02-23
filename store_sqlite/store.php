@@ -19,8 +19,8 @@ EOF;
 
    $ret = $db->query($sql);
    while($row = $ret->fetchArray(SQLITE3_ASSOC) ){
-      echo "<p>ID = ". $row['itemid'].'</p>';
-      echo "<p>NAME = ". $row['itemname'] ."</p>";
+      echo "ID = ". $row['itemid']."\r\n";
+      echo "NAME = ". $row['itemname'] ."\r\n";
       // echo "COST = ". $row['cost] ."\n";
       // echo "PRICE =  ".$row['price'] ."\n\n";
    }
