@@ -94,7 +94,7 @@
                 return false;
             }
         }
-        $file = '1.jpg';   //待加水印的图片地址
+        $file = 'IMG_20210220_091332.jpg';   //待加水印的图片地址
         $water = 'logo.png';  //水印图片的地址
         watermark($file, $water,5);
     ?>

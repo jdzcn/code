@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="../default.css">
+  <link rel="stylesheet" type="text/css" href="../lightform/lightform.css">
+  <title>添加商品</title>
+<style>
+  output {
+    display: flex;
+    overflow: scroll;
+}
+.thumbnail {
+    height: 100px;
+    margin: 10px;
+}
+</style>
+</head>
+<body>
+
+    <form action="add.php" method="post" enctype="multipart/form-data">
+      <label for="name">商品名称</label>
+      <input type="text" id="name" name="name">
+      <label for="files">商品图片</label>     
+      <input id="files" type="file" multiple="multiple" />
+  
+<table>
+<tr>
+  <td>
+    <label for="category">商品分类</label>
+    <select id="category" name="category">
+      <option value="australia">餐具</option>
+      <option value="canada">茶具</option>
+      <option value="usa">花器</option>
+    </select>
+    
+  </td>
+  <td>
+    <label for="desc">描述</label>
+    <select id="desc" name="desc" multiple size="1">
+      <option value="australia">牡丹</option>
+      <option value="canada">菊花</option>
+      <option value="usa">山水</option>
+    </select>
+    
+  </td>
+</tr>
+<tr>
+<td>
+    <label for="spec">规格</label>
+    <input type="text" id="spec" name="spec">
+  
+</td>
+<td>
+    <label for="price">价格</label>
+    <input type="number" id="price" name="price">
+  
+</td>
+</tr>
+</table>
+
+
+
+  
+
+    <input type="submit" value="Submit">
+    <output id="result" />
+  </form>	
+	<script type="text/javascript">
+		function handleFileSelect() {
+    //Check File API support
+    if (window.File && window.FileList && window.FileReader) {
+
+        var files = event.target.files; //FileList object
+        var output = document.getElementById("result");
+        output.innerHTML="";
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            //Only pics
+            if (!file.type.match('image')) continue;
+
+            var picReader = new FileReader();
+            picReader.addEventListener("load", function (event) {
+                var picFile = event.target;
+                var div = document.createElement("div");
+                // div.style="display:inline";
+                div.innerHTML = "<img class='thumbnail' src='" + picFile.result + "'" + "title='" + picFile.name + "'/>";
+                output.insertBefore(div, null);
+            });
+            //Read the image
+            picReader.readAsDataURL(file);
+        }
+    } else {
+        console.log("Your browser does not support File API");
+    }
+}
+
+document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+	</script>
+</body>
+</html>

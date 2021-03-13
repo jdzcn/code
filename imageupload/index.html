@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style type="text/css">
+		body {
+    font-family:'Segoe UI';
+    font-size: 12pt;
+}
+header h1 {
+    font-size:12pt;
+    color: #fff;
+    background-color: #F39C12;
+    padding: 20px;
+}
+article {
+    width: 80%;
+    margin:auto;
+    margin-top:10px;
+}
+output {
+    display: flex;
+}
+.thumbnail {
+    height: 100px;
+    margin: 10px;
+}
+	</style>
+
+</head>
+<body>
+<article>
+    <label for="files">Select multiple files:</label>
+    <input id="files" type="file" multiple="multiple" />
+    <output id="result" />
+</article>
+	<script type="text/javascript">
+		function handleFileSelect() {
+    //Check File API support
+    if (window.File && window.FileList && window.FileReader) {
+
+        var files = event.target.files; //FileList object
+        var output = document.getElementById("result");
+        output.innerHTML="";
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            //Only pics
+            if (!file.type.match('image')) continue;
+
+            var picReader = new FileReader();
+            picReader.addEventListener("load", function (event) {
+                var picFile = event.target;
+                var div = document.createElement("div");
+                // div.style="display:inline";
+                div.innerHTML = "<img class='thumbnail' src='" + picFile.result + "'" + "title='" + picFile.name + "'/>";
+                output.insertBefore(div, null);
+            });
+            //Read the image
+            picReader.readAsDataURL(file);
+        }
+    } else {
+        console.log("Your browser does not support File API");
+    }
+}
+
+document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+	</script>
+</body>
+</html>
